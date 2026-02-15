@@ -65,7 +65,7 @@ bool OrderBook::cancelOrder(OrderId id) {
 }
 
 // === Matching logic ===
-std::vector<Trade> OrderBook::match(Order& incomingOrder) {
+MatchResult OrderBook::match(Order& incomingOrder) {
     if (incomingOrder.side == Side::Buy) {
         return matchBuy(incomingOrder);
     } else {
@@ -75,8 +75,8 @@ std::vector<Trade> OrderBook::match(Order& incomingOrder) {
 
 // Incoming BUY matches against resting ASKS (sells)
 // A buy matches if the buy price >= ask price
-std::vector<Trade> OrderBook::matchBuy(Order& buyOrder) {
-    std::vector<Trade> trades;
+MatchResult OrderBook::matchBuy(Order& buyOrder) {
+    MatchResult result;
 
     // Walk through asks from lowest price up
     while (!asks_.empty() && buyOrder.remaining > 0) {
@@ -100,12 +100,13 @@ std::vector<Trade> OrderBook::matchBuy(Order& buyOrder) {
             level.totalQuantity -= fillQty;
 
             // Record the trade (trades happen at the resting order's price)
-            trades.emplace_back(buyOrder.id, restingOrder->id, askPrice, fillQty);
+            result.trades.emplace_back(buyOrder.id, restingOrder->id, askPrice, fillQty);
 
-            // If resting order is fully filled, remove it
+            // If resting order is fully filled, remove it and track for pool release
             if (restingOrder->isFilled()) {
                 orderLookup_.erase(restingOrder->id);
                 level.orders.pop_front();
+                result.filledOrders.push_back(restingOrder);
             }
         }
 
@@ -115,13 +116,13 @@ std::vector<Trade> OrderBook::matchBuy(Order& buyOrder) {
         }
     }
 
-    return trades;
+    return result;
 }
 
 // Incoming SELL matches against resting BIDS (buys)
 // A sell matches if the sell price <= bid price
-std::vector<Trade> OrderBook::matchSell(Order& sellOrder) {
-    std::vector<Trade> trades;
+MatchResult OrderBook::matchSell(Order& sellOrder) {
+    MatchResult result;
 
     while (!bids_.empty() && sellOrder.remaining > 0) {
         auto& [bidPrice, level] = *bids_.begin(); // best (highest) bid
@@ -139,11 +140,12 @@ std::vector<Trade> OrderBook::matchSell(Order& sellOrder) {
             restingOrder->fill(fillQty);
             level.totalQuantity -= fillQty;
 
-            trades.emplace_back(restingOrder->id, sellOrder.id, bidPrice, fillQty);
+            result.trades.emplace_back(restingOrder->id, sellOrder.id, bidPrice, fillQty);
 
             if (restingOrder->isFilled()) {
                 orderLookup_.erase(restingOrder->id);
                 level.orders.pop_front();
+                result.filledOrders.push_back(restingOrder);
             }
         }
 
@@ -152,7 +154,7 @@ std::vector<Trade> OrderBook::matchSell(Order& sellOrder) {
         }
     }
 
-    return trades;
+    return result;
 }
 
 // === Market data ===

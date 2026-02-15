@@ -81,4 +81,3 @@ matching-engine/
 - [ ] v3: Performance optimization (memory pools, cache-friendly structures)
 - [ ] v4: Multithreading with lock-free queues
 - [ ] v5: Network layer (TCP/UDP order submission)
-

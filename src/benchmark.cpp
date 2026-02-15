@@ -203,17 +203,5 @@ int main() {
         std::cout << "\n";
     }
 
-    // ============================================================
-    // SUMMARY
-    // ============================================================
-    std::cout << "=== What To Optimize ===\n\n";
-    std::cout << "  Look at the numbers above and ask:\n";
-    std::cout << "  1. Is matching or inserting slower? (Benchmark 2)\n";
-    std::cout << "  2. How bad are the p99 tail latencies? (Benchmark 2)\n";
-    std::cout << "  3. How expensive is cancellation? (Benchmark 3)\n";
-    std::cout << "  4. How much time is spent on memory allocation? (Benchmark 4)\n";
-    std::cout << "  5. Does book depth kill performance? (Benchmark 5)\n";
-    std::cout << "\n  These tell you WHERE to focus optimization efforts.\n\n";
-
     return 0;
 }

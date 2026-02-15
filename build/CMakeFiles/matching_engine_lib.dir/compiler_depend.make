@@ -919,6 +919,7 @@ CMakeFiles/matching_engine_lib.dir/src/MatchingEngine.cpp.o: /Users/ric/code/mat
   /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stddef.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/stdint.h \
   /Users/ric/code/matching-engine/include/MatchingEngine.h \
+  /Users/ric/code/matching-engine/include/ObjectPool.h \
   /Users/ric/code/matching-engine/include/Order.h \
   /Users/ric/code/matching-engine/include/OrderBook.h \
   /Users/ric/code/matching-engine/include/Trade.h \
@@ -1851,6 +1852,8 @@ CMakeFiles/matching_engine_lib.dir/src/OrderBook.cpp.o: /Users/ric/code/matching
 /Users/ric/code/matching-engine/src/OrderBook.cpp:
 
 /Users/ric/code/matching-engine/include/Trade.h:
+
+/Users/ric/code/matching-engine/include/ObjectPool.h:
 
 /Users/ric/code/matching-engine/include/MatchingEngine.h:
 

@@ -3,15 +3,18 @@
 #include "OrderBook.h"
 #include "Order.h"
 #include "Trade.h"
+#include "ObjectPool.h"
 
 #include <vector>
-#include <memory>
 
 namespace engine {
 
 class MatchingEngine {
 public:
-    MatchingEngine() = default;
+    // Pre-allocate pool at construction — default 2 million order slots
+    explicit MatchingEngine(size_t poolSize = 2'000'000)
+        : orderPool_(poolSize)
+    {}
 
     // Submit a new limit order — returns any trades that occurred
     std::vector<Trade> submitLimit(OrderId id, Side side, Price price, Quantity qty);
@@ -33,8 +36,8 @@ public:
 private:
     OrderBook book_;
 
-    // We own all orders — stored here so memory is managed in one place
-    std::vector<std::unique_ptr<Order>> orders_;
+    // Pre-allocated memory pool — no heap allocation during trading
+    ObjectPool<Order> orderPool_;
 
     size_t tradeCount_ = 0;
     size_t orderCount_ = 0;

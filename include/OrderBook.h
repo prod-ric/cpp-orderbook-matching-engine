@@ -12,6 +12,13 @@
 
 namespace engine {
 
+// Result of a match operation — includes trades AND pointers to filled resting orders
+// so the engine can release them back to the pool
+struct MatchResult {
+    std::vector<Trade> trades;
+    std::vector<Order*> filledOrders;  // resting orders that were fully filled
+};
+
 // A single price level — holds all orders at one price
 // Uses std::list because we need fast removal from the middle (when orders cancel)
 struct PriceLevel {
@@ -22,18 +29,13 @@ struct PriceLevel {
     explicit PriceLevel(Price p) : price(p) {}
 
     void addOrder(Order* order) {
-        
         orders.push_back(order);
-        order->bookPosition = std::prev(orders.end());  // save the iterator to the last element
-        // print the order ID and bookPosition for debugging
-        
         totalQuantity += order->remaining;
     }
 
     void removeOrder(Order* order) {
         totalQuantity -= order->remaining;
-        orders.erase(order->bookPosition);
-        //orders.remove(order);
+        orders.remove(order);
     }
 
     bool empty() const { return orders.empty(); }
@@ -52,8 +54,8 @@ public:
 
     // === Matching ===
     // Try to match an incoming order against resting orders
-    // Returns a list of trades that occurred
-    std::vector<Trade> match(Order& incomingOrder);
+    // Returns trades and pointers to filled resting orders
+    MatchResult match(Order& incomingOrder);
 
     // === Market data ===
     std::optional<Price> bestBid() const;
@@ -83,8 +85,8 @@ private:
     std::unordered_map<OrderId, Order*> orderLookup_;
 
     // Internal helpers
-    std::vector<Trade> matchBuy(Order& order);
-    std::vector<Trade> matchSell(Order& order);
+    MatchResult matchBuy(Order& order);
+    MatchResult matchSell(Order& order);
     void addToAsks(Order* order);
     void addToBids(Order* order);
 };

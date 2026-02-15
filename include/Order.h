@@ -2,7 +2,6 @@
 
 #include "Types.h"
 #include <string>
-#include <list>
 
 namespace engine {
 
@@ -15,8 +14,6 @@ struct Order {
     Quantity remaining;    // how much is left to fill
     Timestamp timestamp;
 
-
-    std::list<Order*>::iterator bookPosition; // added in v2 to increase cancel speed
     // Constructor for a new order
     Order(OrderId id, Side side, OrderType type, Price price, Quantity quantity)
         : id(id)
