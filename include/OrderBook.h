@@ -30,12 +30,13 @@ struct PriceLevel {
 
     void addOrder(Order* order) {
         orders.push_back(order);
+        order->bookPosition = std::prev(orders.end()); // store iterator for O(1) removal
         totalQuantity += order->remaining;
     }
 
     void removeOrder(Order* order) {
         totalQuantity -= order->remaining;
-        orders.remove(order);
+        orders.erase(order->bookPosition);
     }
 
     bool empty() const { return orders.empty(); }

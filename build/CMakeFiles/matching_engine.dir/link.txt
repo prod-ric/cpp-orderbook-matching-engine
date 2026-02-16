@@ -1,1 +1,1 @@
-/usr/bin/c++  -arch arm64 -Wl,-search_paths_first -Wl,-headerpad_max_install_names CMakeFiles/matching_engine.dir/src/main.cpp.o -o matching_engine  libmatching_engine_lib.a
+/usr/bin/c++ CMakeFiles/matching_engine.dir/src/main.cpp.o -o matching_engine  libmatching_engine_lib.a 
