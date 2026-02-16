@@ -10,7 +10,7 @@ A limit order book and matching engine built in C++ for learning systems program
 - **Order book visualization** (best bid/ask, spread, depth)
 - **Benchmark suite** for measuring throughput and latency
 
-## Setup (macOS)
+## Setup (macOS) - just skip to the build if you're on linux
 
 ### Prerequisites
 
